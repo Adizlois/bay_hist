@@ -1,22 +1,37 @@
 ##
 from bayesian_hm import *
 import time
+import config
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
 plt.rcParams.update({'font.size': 22,'figure.figsize':(20,12)})
 ##
 
 
 # REFERENCE FOLDERS 
 abm_dir="/storage/ABM/ibm-seed-and-sus/1-main-ABM/src/"
-inout="/storage/ABM/ibm-seed-and-sus/1-main-ABM/In_out"
 realdatadir="/storage/ABM/ibm-seed-and-sus/0-pre-processing/hospital_data/"
+
+#Make the variables available 
+config.inout="/storage/ABM/ibm-seed-and-sus/1-main-ABM/In_out"
+config.agegroups=np.arange(0,90,10)
+
+
 os.chdir(abm_dir)
 waves_folder="../In_out/waves/"
+
+
+
+
 
 # VARIABLES
 
 first_date="2021-09-27"
 ndays=200 #From Sep 28th
-agegroups=np.arange(0,90,10)
+
+
+
 
 # INPUT VARIABLES
 input_names=["b","new_beta","om_inc","trans_rate","om_seed","sus1","sus2","sus3",
