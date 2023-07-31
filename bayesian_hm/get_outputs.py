@@ -1,5 +1,6 @@
 import pandas as pd
 from .get_age_hospitalizations import get_age_hospitalizations
+from .get_daily_hospitalizations import get_daily_hospitalizations
 def get_outputs(basename,basedir="../In_out"):
     [hosp1,hosp2,hosp3,hosp4,hosp5,hosp6,hosp7,hosp8,hosp9]=get_age_hospitalizations(basename=basename,basedir=basedir,
                                                                                      aggr=[[x] for x in range(9)])

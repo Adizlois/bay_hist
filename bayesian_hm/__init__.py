@@ -60,7 +60,7 @@ from .filter_dict import filter_dict
 from .filter_implausibility import filter_implausibility
 #from .get_age_hospitalizations import get_age_hospitalizations
 #from .get_chunks import get_chunks
-from .get_daily_hospitalizations import get_daily_hospitalizations
+#from .get_daily_hospitalizations import get_daily_hospitalizations
 #from .get_hosps import get_hosps
 #from .get_outputs import get_outputs
 from .get_probability import get_probability

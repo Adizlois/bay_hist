@@ -19,6 +19,7 @@ realdatadir="/storage/ABM/ibm_git_test/0-pre-processing/hospital_data/"
 
 #Make the variables available 
 config.inout="/storage/ABM/ibm_git_test/1-main-ABM/In_out"
+config.abm_dir=abm_dir
 config.realdatadir=realdatadir
 config.agegroups=np.arange(0,90,10)
 

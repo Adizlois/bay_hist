@@ -3,6 +3,7 @@ import config
 def build_command(outputfolder,b,new_beta,omicron_increase,trans_rate,omi_seed,
                   sus1,sus2,sus3,sus4,sus5,sus6,sus7,sus8,sus9,ndays=200,seed=10,i=0,v=-1):
     inout=config.inout
+    abm_dir=config.abm_dir
     outputfolder=inout+"/"+outputfolder
     if (not os.path.isdir(outputfolder)):
         os.mkdir(outputfolder)
