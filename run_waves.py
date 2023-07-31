@@ -10,29 +10,24 @@ plt.rcParams.update({'font.size': 22,'figure.figsize':(20,12)})
 ##
 
 
-# REFERENCE FOLDERS 
+## REFERENCE FOLDERS 
+
+#MODEL 
 abm_dir="/storage/ABM/ibm-seed-and-sus/1-main-ABM/src/"
+#REALDATA
 realdatadir="/storage/ABM/ibm-seed-and-sus/0-pre-processing/hospital_data/"
 
 #Make the variables available 
 config.inout="/storage/ABM/ibm-seed-and-sus/1-main-ABM/In_out"
 config.agegroups=np.arange(0,90,10)
 
-
+#CHANGE WORKING DIRECTORY
 os.chdir(abm_dir)
+#OUTPUT FOLDER
 waves_folder="../In_out/waves/"
-
-
-
-
-
-# VARIABLES
 
 first_date="2021-09-27"
 ndays=200 #From Sep 28th
-
-
-
 
 # INPUT VARIABLES
 input_names=["b","new_beta","om_inc","trans_rate","om_seed","sus1","sus2","sus3",
@@ -65,11 +60,11 @@ reuse_emu=False
 ##
 
 
-
+#DOIS
 dois_hosps_cal=[20,30,40,60,75,90,110,130,150,170,194]
 
 
-
+#Select active variables per DOI
 output_set_cal=9*[
     [0,5,6,7,8,9,10,11,12,13],
     [0,4,5,6,7,8,9,10,11,12,13],
@@ -99,7 +94,6 @@ params8=["hosp9"]
 
 
 wave=initial_wave
-
 parallel_jobs=75#Max number of workers to run ABM
 parallel_jobs_emulators=50 #Number of parallel jobs to calibrate the emulators
 max_folders=1200 #Just in case there is some kind of error in the parametrization
@@ -112,6 +106,7 @@ else:
 
 p_below=0.0
 
+#standard deviation of the perturbation to be applied during the exploration step
 sds=[0.1,0.07,0.07,0.06,0.05,0.05,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04]
 
 while(wave <= nwaves):
