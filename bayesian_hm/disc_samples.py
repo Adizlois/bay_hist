@@ -1,4 +1,5 @@
 import numpy as np
+from .get_probability import get_probability
 
 def disc_samples(num,x,unif=False):
     if unif:
