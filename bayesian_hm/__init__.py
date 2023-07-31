@@ -55,7 +55,7 @@ from .check_emulators import check_emulators
 from .disc_samples import disc_samples
 from .emulate import emulate
 #from .exec_parallel import exec_parallel
-from .extract_days import extract_days
+#from .extract_days import extract_days
 from .filter_dict import filter_dict
 from .filter_implausibility import filter_implausibility
 #from .get_age_hospitalizations import get_age_hospitalizations

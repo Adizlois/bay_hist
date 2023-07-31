@@ -4,6 +4,7 @@ import time
 import config
 import numpy as np
 import os
+import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 plt.rcParams.update({'font.size': 22,'figure.figsize':(20,12)})
@@ -212,7 +213,7 @@ while(wave <= nwaves):
         
         plot_calibration_runs(allres,real_data=get_real_data(np.arange(200).tolist(),w=None,byage=False),
                               dois_to_include=dois_hosps,filename=plots_folder+"/calibration_runs.png",
-                              ndays=ndays,input_names=input_names)
+                              ndays=ndays,input_names=input_names,wave=wave,ndays=ndays)
     
     alldata_tra_hosp1=extract_days(allres,dois_hosps,input_names,params0)
     alldata_tra_hosp2=extract_days(allres,dois_hosps,input_names,params1)

@@ -1,4 +1,5 @@
 import numpy as np
+import config
 from .get_chunks import get_chunks
 from .clean_dir import clean_dir
 from .build_command import build_command
@@ -14,6 +15,7 @@ def process_params(samples,k=25,parallel_jobs=50,max_folders=200,basename="outpu
     'ndays= number of days to run'
     'params= list of params to keep in the results (e.g. [hosp_inc_0,hosp_inc_1])'
     
+    inout=config.inout
     
     if max_folders%k!=0:
         raise ValueError("The maximum number of folders should be a multiple of k (repetitions)")
@@ -43,7 +45,8 @@ def process_params(samples,k=25,parallel_jobs=50,max_folders=200,basename="outpu
     
     for j in range(len(alldata)):
         chunk=alldata[j]
-        clean_dir(basename=basename)
+        #Cleaning the output folder. Removing all folders that contain the basename
+        clean_dir(basename=basename,basedir=inout)
         print("Processing chunk {}/{}".format(j+1,len(alldata)))
         print("###################")
         #Generate commands
@@ -57,7 +60,7 @@ def process_params(samples,k=25,parallel_jobs=50,max_folders=200,basename="outpu
         #print(" ".join(commands[0]))
         pull_run(parallel_jobs, commands)
         #Extract results
-        z=[get_outputs(basename=x) for x in [basename+str(b) for b in range(len(chunk))]]
+        z=[get_outputs(basename=x,basedir=inout) for x in [basename+str(b) for b in range(len(chunk))]]
         #Add to nested dict-> (params){k{results}}
         i=0
         for h in np.arange(0,len(chunk),k):
