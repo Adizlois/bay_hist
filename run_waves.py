@@ -3,6 +3,7 @@ from bayesian_hm import *
 import time
 import config
 import numpy as np
+import os
 import seaborn as sns
 import matplotlib.pyplot as plt
 plt.rcParams.update({'font.size': 22,'figure.figsize':(20,12)})
