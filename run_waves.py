@@ -13,18 +13,19 @@ plt.rcParams.update({'font.size': 22,'figure.figsize':(20,12)})
 ## REFERENCE FOLDERS 
 
 #MODEL 
-abm_dir="/storage/ABM/ibm-seed-and-sus/1-main-ABM/src/"
+abm_dir="/storage/ABM/ibm_git_test/1-main-ABM/src/"
 #REALDATA
-realdatadir="/storage/ABM/ibm-seed-and-sus/0-pre-processing/hospital_data/"
+realdatadir="/storage/ABM/ibm_git_test/0-pre-processing/hospital_data/"
 
 #Make the variables available 
-config.inout="/storage/ABM/ibm-seed-and-sus/1-main-ABM/In_out"
+config.inout="/storage/ABM/ibm_git_test/1-main-ABM/In_out"
+config.realdatadir=realdatadir
 config.agegroups=np.arange(0,90,10)
 
 #CHANGE WORKING DIRECTORY
 os.chdir(abm_dir)
 #OUTPUT FOLDER
-waves_folder="../In_out/waves/"
+waves_folder=config.inout+"/waves/"
 
 first_date="2021-09-27"
 ndays=200 #From Sep 28th
@@ -108,9 +109,12 @@ p_below=0.0
 
 #standard deviation of the perturbation to be applied during the exploration step
 sds=[0.1,0.07,0.07,0.06,0.05,0.05,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04]
+#Implausibility thresholds to be applied at each wave
+imp_thresholds=[4,4,4,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3]
+
 
 while(wave <= nwaves):
-    plots_folder="../In_out/waves/wave"+str(wave)+"/plots"
+    plots_folder=waves_folder+"wave"+str(wave)+"/plots"
     x=x.astype(np.float32)
     dois_hosps=dois_hosps_cal
     output_set=output_set_cal
@@ -370,7 +374,7 @@ while(wave <= nwaves):
     vo=1.*real_data
     vo=vo*0.10
     vo[vo==0]=0.01
-    imp_threshold=[4,4,4,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3][wave-1]
+    imp_threshold=imp_thresholds[wave-1]
     
     vs=np.expand_dims(np.nanpercentile(alldata_tra[vars_],50,axis=0),axis=1)
     
@@ -406,7 +410,7 @@ while(wave <= nwaves):
     
     g=sns.pairplot(pd.DataFrame(data=x[np.random.choice(list(range(x.shape[0])),size=1000),:],columns=input_names),kind="kde")
     g.fig.suptitle("Wave "+str(wave), y=1.08)
-    plt.savefig("../In_out/waves/wave"+str(wave)+"/wave_"+str(wave)+"_xfilt.png")
+    plt.savefig(waves_folder+"wave"+str(wave)+"/wave_"+str(wave)+"_xfilt.png")
     plt.show()
     
     
