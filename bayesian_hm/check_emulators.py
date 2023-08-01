@@ -1,7 +1,8 @@
 import os
+import numpy as np
 from .plot_emulator import plot_emulator
 
-def check_emulators(alldata_tra_val,emulators,outputs,output_set,plots_folder=None):
+def check_emulators(alldata_tra_val,emulators,outputs,output_set,input_names,plots_folder=None):
     
     if not os.path.exists(plots_folder):
         os.mkdir(plots_folder)

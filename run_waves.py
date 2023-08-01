@@ -102,8 +102,8 @@ parallel_jobs_emulators=50 #Number of parallel jobs to calibrate the emulators
 max_folders=1200 #Just in case there is some kind of error in the parametrization
 
 if load_x:
-    x=np.load(waves_folder+"wave"+str(initial_wave)+"/wave_"+str(initial_wave)+"_x.npy",allow_pickle='TRUE').item()["x"]
-    
+    x=np.load(waves_folder+"wave"+str(initial_wave-1)+"/wave_"+str(initial_wave-1)+"_xfilt.npy",allow_pickle='TRUE').item()["x_filt"]
+
 else:
     x=lhs_samples(10000000,int_variable=4)
 
@@ -335,6 +335,7 @@ while(wave <= nwaves):
                                      emulators=emulators,
                                      outputs=mus,
                                      output_set=output_set,
+                                     input_names=input_names,
                                  plots_folder=plots_folder)
     
 
