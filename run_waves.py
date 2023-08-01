@@ -47,7 +47,7 @@ nwaves=15
 # Number of validation runs
 nval=20
 # Number of repetitions per sample
-k=3
+k=5
 
 
 
@@ -345,8 +345,8 @@ while(wave <= nwaves):
     print("Coverages ",)
     print(coverages_m)
     
-    threshold_r=0.3
-    threshold_coverage=0.7
+    threshold_r=0.5
+    threshold_coverage=0.75
     emu_mask=[(rs_m[i]>=threshold_r)&(coverages_m[i]>=threshold_coverage) for i in range(len(rs_m))]
 
     
