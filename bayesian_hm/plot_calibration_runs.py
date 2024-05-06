@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from .extract_days import extract_days
 
-def plot_calibration_runs(allres,real_data,dois_to_include,filename,input_names,wave=wave,ndays=200):
+def plot_calibration_runs(allres,real_data,dois_to_include,filename,input_names,wave,ndays=200):
     alldata_tra=extract_days(allres,np.arange(ndays).tolist(),input_names,["hosps"])
     fig,ax=plt.subplots()
     mus=[x for x in alldata_tra.columns if "_mu-" in x]
