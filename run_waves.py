@@ -14,12 +14,12 @@ plt.rcParams.update({'font.size': 22,'figure.figsize':(20,12)})
 ## REFERENCE FOLDERS 
 
 #MODEL 
-abm_dir="/storage/ABM/ibm_git_test/1-main-ABM/src/"
+abm_dir="/home/gandalf/Documents/ABM_model/1-main-ABM/src/"
 #REALDATA
-realdatadir="/storage/ABM/ibm_git_test/0-pre-processing/hospital_data/"
+realdatadir="/home/gandalf/Documents/ABM_model/0-pre-processing/hospital_data/"
 
 #Make the variables available 
-config.inout="/storage/ABM/ibm_git_test/1-main-ABM/In_out"
+config.inout="/home/gandalf/Documents/ABM_model/1-main-ABM/In_out"
 config.abm_dir=abm_dir
 config.realdatadir=realdatadir
 config.agegroups=np.arange(0,90,10)
@@ -35,19 +35,19 @@ ndays=200 #From Sep 28th
 # INPUT VARIABLES
 input_names=["b","new_beta","om_inc","trans_rate","om_seed","sus1","sus2","sus3",
             "sus4","sus5","sus6",
-            "sus7","sus8","sus9"] 
+            "sus7","sus8","sus9","fihr"]
 
 # NUMBER OF SAMPLES TO BE USED PER WAVE
-nsamples=[len(input_names)*15]+4*[len(input_names)*20]+4*[len(input_names)*30]+3*[len(input_names)*40]+[len(input_names)*50]+[len(input_names)*60]+[len(input_names)*70]
-
+#nsamples=[len(input_names)*15]+4*[len(input_names)*20]+4*[len(input_names)*30]+3*[len(input_names)*40]+[len(input_names)*50]+[len(input_names)*60]+[len(input_names)*70]
+nsamples=[2,2,2]
 
 # Total number of waves
-nwaves=15
+nwaves=2
 
 # Number of validation runs
-nval=20
+nval=3
 # Number of repetitions per sample
-k=5
+k=2
 
 
 
@@ -56,36 +56,43 @@ start=time.time()
 
 ## TO BE USED ONLY IN CASE WE ARE RESUMING A PREVIOUS CALIBRATION AT A CERTAIN WAVE:
 initial_wave=1
-load_x=False
-reuse_runs=False
+load_x=True
+reuse_runs=True
 reuse_vals=False
 reuse_emu=False
 ##
 
 
 #DOIS
-dois_hosps_cal=[20,30,40,60,75,90,110,130,150,170,194]
+dois_omi_cal=[90,110,130,150]
+dois_hosps_cal=[25,35,50,60,75,90,110,130,150,170,194]
 
 
 #Select active variables per DOI
 output_set_cal=9*[
-    [0,5,6,7,8,9,10,11,12,13],
-    [0,4,5,6,7,8,9,10,11,12,13],
-    [0,1,4,5,6,7,8,9,10,11,12,13],
-    [0,1,2,3,4,5,6,7,8,9,10,11,12,13],
-    [0,1,2,3,4,5,6,7,8,9,10,11,12,13],
-    [1,2,3,4,5,6,7,8,9,10,11,12,13],
-    [1,2,3,4,5,6,7,8,9,10,11,12,13],
-    [1,2,3,4,5,6,7,8,9,10,11,12,13],
-    [1,2,3,4,5,6,7,8,9,10,11,12,13],
-    [1,2,3,4,5,6,7,8,9,10,11,12,13],
-    [1,2,3,4,5,6,7,8,9,10,11,12,13]
+    [0,5,6,7,8,9,10,11,12,13,14],
+    [0,4,5,6,7,8,9,10,11,12,13,14],
+    [0,1,4,5,6,7,8,9,10,11,12,13,14],
+    [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14],
+    [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14],
+    [1,2,3,4,5,6,7,8,9,10,11,12,13,14],
+    [1,2,3,4,5,6,7,8,9,10,11,12,13,14],
+    [1,2,3,4,5,6,7,8,9,10,11,12,13,14],
+    [1,2,3,4,5,6,7,8,9,10,11,12,13,14],
+    [1,2,3,4,5,6,7,8,9,10,11,12,13,14],
+    [1,2,3,4,5,6,7,8,9,10,11,12,13,14],
+    #OMICAL
+    [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14],
+    [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14],
+    [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14],
+    [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14]
+    
 ]
 
 #params=["H"+str(i) for i in agegroups]
 params0=["hosp1"]
 params1=["hosp2"]
-#params1=["omicron"]
+#
 params2=["hosp3"]
 params3=["hosp4"]
 params4=["hosp5"]
@@ -93,24 +100,25 @@ params5=["hosp6"]
 params6=["hosp7"]
 params7=["hosp8"]
 params8=["hosp9"]
-
-
+params9=["omicron"]
 
 wave=initial_wave
-parallel_jobs=75#Max number of workers to run ABM
-parallel_jobs_emulators=50 #Number of parallel jobs to calibrate the emulators
-max_folders=1200 #Just in case there is some kind of error in the parametrization
+parallel_jobs=3#Max number of workers to run ABM
+parallel_jobs_emulators=3 #Number of parallel jobs to calibrate the emulators
+max_folders=120 #Just in case there is some kind of error in the parametrization
 
 if load_x:
-    x=np.load(waves_folder+"wave"+str(initial_wave-1)+"/wave_"+str(initial_wave-1)+"_xfilt.npy",allow_pickle='TRUE').item()["x_filt"]
+    #x=np.load(waves_folder+"wave"+str(initial_wave-1)+"/wave_"+str(initial_wave-1)+"_xfilt.npy",allow_pickle='TRUE').item()["x_filt"]
+    x=np.load(waves_folder+"wave"+str(initial_wave)+"/wave_"+str(initial_wave)+"_x.npy",allow_pickle='TRUE').item()["x"]
 
 else:
-    x=lhs_samples(10000000,int_variable=4)
+    x=lhs_samples(10000000)
 
 p_below=0.0
 
 #standard deviation of the perturbation to be applied during the exploration step
 sds=[0.1,0.07,0.07,0.06,0.05,0.05,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04]
+
 #Implausibility thresholds to be applied at each wave
 imp_thresholds=[4,4,4,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3]
 
@@ -119,6 +127,7 @@ while(wave <= nwaves):
     plots_folder=waves_folder+"wave"+str(wave)+"/plots"
     x=x.astype(np.float32)
     dois_hosps=dois_hosps_cal
+    dois_omi=dois_omi_cal
     output_set=output_set_cal
     
     #Create folder for the results if doesn't exist
@@ -149,9 +158,7 @@ while(wave <= nwaves):
     print("Time %.2f"%(end1-end0))
     if wave>1:
         print("Applying perturbation...",)
-        x=perturb_x(x,perturb_sd=sds[wave-1])
-        
-        #CONSTRAINTS TO THE VALUES OF THE INPUT VARIABLES
+        x=perturb_x(x,perturb_sd=sds[wave-1])    
         x=x[(x[:,1]>0),:]
         x=x[(x[:,0]>0),:]
         x=x[(x[:,2]>0),:]
@@ -166,6 +173,7 @@ while(wave <= nwaves):
         x=x[(x[:,11]>0),:]
         x=x[(x[:,12]>0),:]
         x=x[(x[:,13]>0),:]
+        x=x[(x[:,14]>0.05),:]
         
         x=x[(x[:,4]<=60),:]
         x=x[(x[:,4]>=1),:]
@@ -179,10 +187,9 @@ while(wave <= nwaves):
         x=x[(x[:,11]<=1),:]
         x=x[(x[:,12]<=1),:]
         x=x[(x[:,13]<=1),:]
-        
-        #print(samples_val)
-        
+        x=x[(x[:,14]<1.1),:]
         print("Done")
+    
     
     # SAVE THE SAMPLES
     wave_res={}          
@@ -206,14 +213,21 @@ while(wave <= nwaves):
         print("Making calibration runs...",)
 
         allres=process_params(samples,k=k,parallel_jobs=parallel_jobs,max_folders=max_folders,basename="output",ndays=ndays)
-        non_valid=filter_dict(allres,k)
-        if len(non_valid)>0:
-            for a in non_valid:
-                del allres[a]
+
+        #non_valid=filter_dict(allres,k)
+        #if len(non_valid)>0:
+        #    for a in non_valid:
+        #        del allres[a]
         
+        wave_res={}
+        wave_res["runs"]=allres
+        np.save(waves_folder+"wave"+str(wave)+"/wave_"+str(wave)+"_runs.npy", wave_res)
         plot_calibration_runs(allres,real_data=get_real_data(np.arange(200).tolist(),w=None,byage=False),
                               dois_to_include=dois_hosps,filename=plots_folder+"/calibration_runs.png",
-                              ndays=ndays,input_names=input_names,wave=wave,ndays=ndays)
+                              ndays=200,wave=wave,input_names=input_names)
+        
+    
+
     
     alldata_tra_hosp1=extract_days(allres,dois_hosps,input_names,params0)
     alldata_tra_hosp2=extract_days(allres,dois_hosps,input_names,params1)
@@ -224,8 +238,10 @@ while(wave <= nwaves):
     alldata_tra_hosp7=extract_days(allres,dois_hosps,input_names,params6)
     alldata_tra_hosp8=extract_days(allres,dois_hosps,input_names,params7)
     alldata_tra_hosp9=extract_days(allres,dois_hosps,input_names,params8)
-
-    
+    #omicron
+    alldata_tra_omi1=extract_days(allres,dois_omi,input_names,params9)
+    #alldata_tra_cum2=extract_days(allres,dois_cum,input_names,params3)
+    #alldata_tra_cum3=extract_days(allres,dois_cum,input_names,params4)
     alldata_tra=pd.concat([alldata_tra_hosp1,
                            alldata_tra_hosp2.drop(input_names,axis=1),
                            alldata_tra_hosp3.drop(input_names,axis=1),
@@ -235,6 +251,8 @@ while(wave <= nwaves):
                            alldata_tra_hosp7.drop(input_names,axis=1),
                            alldata_tra_hosp8.drop(input_names,axis=1),
                            alldata_tra_hosp9.drop(input_names,axis=1),
+                           alldata_tra_omi1.drop(input_names,axis=1),
+                           
                           ],axis=1)
     wave_res={}
     wave_res["runs"]=allres
@@ -267,6 +285,7 @@ while(wave <= nwaves):
             for a in non_valid:
                 del allval[a]
     
+    
     alldata_tra_hosp1=extract_days(allval,dois_hosps,input_names,params0)
     alldata_tra_hosp2=extract_days(allval,dois_hosps,input_names,params1)
     alldata_tra_hosp3=extract_days(allval,dois_hosps,input_names,params2)
@@ -276,6 +295,7 @@ while(wave <= nwaves):
     alldata_tra_hosp7=extract_days(allval,dois_hosps,input_names,params6)
     alldata_tra_hosp8=extract_days(allval,dois_hosps,input_names,params7)
     alldata_tra_hosp9=extract_days(allval,dois_hosps,input_names,params8)
+    alldata_tra_omi1=extract_days(allval,dois_omi,input_names,params9)
 
 
     alldata_tra_val=pd.concat([alldata_tra_hosp1,
@@ -287,6 +307,7 @@ while(wave <= nwaves):
                                alldata_tra_hosp7.drop(input_names,axis=1),
                                alldata_tra_hosp8.drop(input_names,axis=1),
                                alldata_tra_hosp9.drop(input_names,axis=1),
+                               alldata_tra_omi1.drop(input_names,axis=1),
                                ],axis=1)
    
 
