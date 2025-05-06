@@ -14,12 +14,12 @@ plt.rcParams.update({'font.size': 22,'figure.figsize':(20,12)})
 ## REFERENCE FOLDERS 
 
 #MODEL 
-abm_dir="/fp/projects01/ec194/Alfonso/sensitivity/BA2/1-main-ABM/src/"
+abm_dir="./1-main-ABM/src/"
 #REALDATA
-realdatadir="/fp/projects01/ec194/Alfonso/sensitivity/BA2/0-pre-processing/hospital_data/"
+realdatadir="./0-pre-processing/hospital_data/"
 
 #Make the variables available 
-config.inout="/fp/projects01/ec194/Alfonso/sensitivity/BA2/1-main-ABM/In_out"
+config.inout="./1-main-ABM/In_out"
 config.abm_dir=abm_dir
 config.realdatadir=realdatadir
 config.agegroups=np.arange(0,90,10)
@@ -38,7 +38,7 @@ input_names=["b","new_beta","om_inc","trans_rate","om_seed","sus1","sus2","sus3"
             "sus7","sus8","sus9","fihr"]
 
 # NUMBER OF SAMPLES TO BE USED PER WAVE
-nsamples=[len(input_names)*20]+4*[len(input_names)*20]+4*[len(input_names)*30]+3*[len(input_names)*40]+[len(input_names)*50]+[len(input_names)*60]+[len(input_names)*70]
+nsamples=[len(input_names)*15]+4*[len(input_names)*20]+4*[len(input_names)*30]+3*[len(input_names)*40]+[len(input_names)*50]+[len(input_names)*60]+[len(input_names)*70]
 
 
 # Total number of waves
@@ -55,11 +55,11 @@ start=time.time()
 
 
 ## TO BE USED ONLY IN CASE WE ARE RESUMING A PREVIOUS CALIBRATION AT A CERTAIN WAVE:
-initial_wave=5
-load_x=True
-reuse_runs=True
-reuse_vals=True
-reuse_emu=True
+initial_wave=1
+load_x=False
+reuse_runs=False
+reuse_vals=False
+reuse_emu=False
 ##
 
 
@@ -381,20 +381,6 @@ while(wave <= nwaves):
     print("real-> ",)
     print(real_data)
     
-    #pred_var=emulators_vars.get_predictions(x,processes=1)#processes=min(10,len(emulators_vars.emulators)))
-    #v_s=np.array([a["mean"] for a in pred_var]) 
-    #v_s_perc=np.expand_dims(np.percentile(alldata_tra[vars_],20,axis=0),axis=1)
-   
-    #def pred(i):
-    #    return emulators_var.predict(x,i)["mean"].astype(np.float32)
-    #vs = np.array(Parallel(n_jobs=3)(delayed(pred)(i) for i in range(len(vars_))))
-    #vs = np.array(Parallel(n_jobs=4)(delayed(pred)(i) for i in range(len(vars_))))
-    
-    
-    # vs=np.array([emulators_var.predict(x,i)["mean"] for i in range(len(vars_))])
-    # v_s_perc=np.expand_dims(np.percentile(alldata_tra[vars_],10,axis=0),axis=1)
-    # for j in range(vs.shape[0]):
-    #     vs[j,:][vs[j,:]<v_s_perc[j]]=v_s_perc[j]
     vo=1.*real_data
     vo=vo*0.10
     vo[vo==0]=0.01
