@@ -108,7 +108,6 @@ parallel_jobs_emulators=120 #Number of parallel jobs to calibrate the emulators
 max_folders=900 #Just in case there is some kind of error in the parametrization
 
 if load_x:
-    #x=np.load(waves_folder+"wave"+str(initial_wave-1)+"/wave_"+str(initial_wave-1)+"_xfilt.npy",allow_pickle='TRUE').item()["x_filt"]
     x=np.load(waves_folder+"wave"+str(initial_wave)+"/wave_"+str(initial_wave)+"_x.npy",allow_pickle='TRUE').item()["x"]
 
 else:
@@ -120,7 +119,7 @@ p_below=0.0
 sds=[0.2,0.15,0.15,0.1,0.1,0.07,0.07,0.05,0.05,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04]
 
 #Implausibility thresholds to be applied at each wave
-imp_thresholds=[4,4,4,3,4,3,3,3,3,3,3,3,3,3,3,3,3,3,3]
+imp_thresholds=[4,4,4,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3]
 
 
 while(wave <= nwaves):
@@ -296,8 +295,6 @@ while(wave <= nwaves):
     alldata_tra_hosp8=extract_days(allval,dois_hosps,input_names,params7)
     alldata_tra_hosp9=extract_days(allval,dois_hosps,input_names,params8)
     alldata_tra_omi1=extract_days(allval,dois_omi,input_names,params9)
-
-
     alldata_tra_val=pd.concat([alldata_tra_hosp1,
                                alldata_tra_hosp2.drop(input_names,axis=1),
                                alldata_tra_hosp3.drop(input_names,axis=1),
@@ -330,8 +327,7 @@ while(wave <= nwaves):
     vars_=[x for x in alldata_tra.columns if "_var-" in x]
 
     print(mus)
-    
-    
+        
     print("Training emulators...",)
     end5=time.time()
     if reuse_emu:
@@ -344,9 +340,7 @@ while(wave <= nwaves):
         np.save(waves_folder+"wave"+str(wave)+"/wave_"+str(wave)+"_emulators.npy", wave_res)
     
     reuse_emu=False
-
-    
-    
+      
     print("Done")
     
     end6=time.time()
@@ -367,7 +361,7 @@ while(wave <= nwaves):
     print(coverages_m)
     
     threshold_r=0.5
-    threshold_coverage=0.75
+    threshold_coverage=0.8
     emu_mask=[(rs_m[i]>=threshold_r)&(coverages_m[i]>=threshold_coverage) for i in range(len(rs_m))]
 
     
