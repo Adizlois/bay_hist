@@ -14,12 +14,12 @@ plt.rcParams.update({'font.size': 22,'figure.figsize':(20,12)})
 ## REFERENCE FOLDERS 
 
 #MODEL 
-abm_dir="/home/gandalf/Documents/ABM_model/1-main-ABM/src/"
+abm_dir="/fp/projects01/ec194/Alfonso/sensitivity/BA2/1-main-ABM/src/"
 #REALDATA
-realdatadir="/home/gandalf/Documents/ABM_model/0-pre-processing/hospital_data/"
+realdatadir="/fp/projects01/ec194/Alfonso/sensitivity/BA2/0-pre-processing/hospital_data/"
 
 #Make the variables available 
-config.inout="/home/gandalf/Documents/ABM_model/1-main-ABM/In_out"
+config.inout="/fp/projects01/ec194/Alfonso/sensitivity/BA2/1-main-ABM/In_out"
 config.abm_dir=abm_dir
 config.realdatadir=realdatadir
 config.agegroups=np.arange(0,90,10)
@@ -38,16 +38,16 @@ input_names=["b","new_beta","om_inc","trans_rate","om_seed","sus1","sus2","sus3"
             "sus7","sus8","sus9","fihr"]
 
 # NUMBER OF SAMPLES TO BE USED PER WAVE
-#nsamples=[len(input_names)*15]+4*[len(input_names)*20]+4*[len(input_names)*30]+3*[len(input_names)*40]+[len(input_names)*50]+[len(input_names)*60]+[len(input_names)*70]
-nsamples=[2,2,2]
+nsamples=[len(input_names)*20]+4*[len(input_names)*20]+4*[len(input_names)*30]+3*[len(input_names)*40]+[len(input_names)*50]+[len(input_names)*60]+[len(input_names)*70]
+
 
 # Total number of waves
-nwaves=2
+nwaves=15
 
 # Number of validation runs
-nval=3
+nval=20
 # Number of repetitions per sample
-k=2
+k=3
 
 
 
@@ -55,11 +55,11 @@ start=time.time()
 
 
 ## TO BE USED ONLY IN CASE WE ARE RESUMING A PREVIOUS CALIBRATION AT A CERTAIN WAVE:
-initial_wave=1
+initial_wave=5
 load_x=True
 reuse_runs=True
-reuse_vals=False
-reuse_emu=False
+reuse_vals=True
+reuse_emu=True
 ##
 
 
@@ -103,9 +103,9 @@ params8=["hosp9"]
 params9=["omicron"]
 
 wave=initial_wave
-parallel_jobs=3#Max number of workers to run ABM
-parallel_jobs_emulators=3 #Number of parallel jobs to calibrate the emulators
-max_folders=120 #Just in case there is some kind of error in the parametrization
+parallel_jobs=120#Max number of workers to run ABM
+parallel_jobs_emulators=120 #Number of parallel jobs to calibrate the emulators
+max_folders=900 #Just in case there is some kind of error in the parametrization
 
 if load_x:
     #x=np.load(waves_folder+"wave"+str(initial_wave-1)+"/wave_"+str(initial_wave-1)+"_xfilt.npy",allow_pickle='TRUE').item()["x_filt"]
@@ -117,10 +117,10 @@ else:
 p_below=0.0
 
 #standard deviation of the perturbation to be applied during the exploration step
-sds=[0.1,0.07,0.07,0.06,0.05,0.05,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04]
+sds=[0.2,0.15,0.15,0.1,0.1,0.07,0.07,0.05,0.05,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04]
 
 #Implausibility thresholds to be applied at each wave
-imp_thresholds=[4,4,4,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3]
+imp_thresholds=[4,4,4,3,4,3,3,3,3,3,3,3,3,3,3,3,3,3,3]
 
 
 while(wave <= nwaves):
@@ -214,18 +214,18 @@ while(wave <= nwaves):
 
         allres=process_params(samples,k=k,parallel_jobs=parallel_jobs,max_folders=max_folders,basename="output",ndays=ndays)
 
-        #non_valid=filter_dict(allres,k)
-        #if len(non_valid)>0:
-        #    for a in non_valid:
-        #        del allres[a]
+        non_valid=filter_dict(allres,k)
+        if len(non_valid)>0:
+            for a in non_valid:
+                del allres[a]
         
         wave_res={}
         wave_res["runs"]=allres
         np.save(waves_folder+"wave"+str(wave)+"/wave_"+str(wave)+"_runs.npy", wave_res)
-        plot_calibration_runs(allres,real_data=get_real_data(np.arange(200).tolist(),w=None,byage=False),
-                              dois_to_include=dois_hosps,filename=plots_folder+"/calibration_runs.png",
-                              ndays=200,wave=wave,input_names=input_names)
-        
+        try:
+            plot_calibration_runs(allres,real_data=get_real_data(np.arange(200).tolist(),w=None,byage=False),dois_to_include=dois_hosps,filename=plots_folder+"/calibration_runs.png",ndays=200,wave=wave,input_names=input_names)
+        except:
+            print("Error in the plotting function")
     
 
     
@@ -377,7 +377,7 @@ while(wave <= nwaves):
     print("Exploring the parameters space and estimating Implausibility... ",)
     print("#######")
     before=x.shape[0]
-    real_data=get_real_data(dois_hosps,w=7,byage=True)
+    real_data=np.concatenate([get_real_data(dois_hosps,w=7,byage=True),get_real_data(dois_omi,w=7,omi=True)])
     print("real-> ",)
     print(real_data)
     
